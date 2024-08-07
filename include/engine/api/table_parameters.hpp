@@ -56,7 +56,6 @@ struct TableParameters : public BaseParameters
     std::vector<std::size_t> sources;
     std::vector<std::size_t> destinations;
     double fallback_speed = from_alias<double>(INVALID_FALLBACK_SPEED);
-
     enum class FallbackCoordinateType
     {
         Input = 0,
@@ -76,6 +75,15 @@ struct TableParameters : public BaseParameters
     AnnotationsType annotations = AnnotationsType::Duration;
 
     double scale_factor = 1;
+
+    enum class MappingType
+    {   
+        None ,
+        OneToOne ,
+        ManyToMany
+    };
+     
+    MappingType source_destination_mapping = MappingType::None;
 
     TableParameters() = default;
     template <typename... Args>
@@ -110,6 +118,24 @@ struct TableParameters : public BaseParameters
           fallback_coordinate_type{fallback_coordinate_type_}, annotations{annotations_},
           scale_factor{scale_factor_}
 
+    {
+    }
+
+    template <typename... Args>
+    TableParameters(std::vector<std::size_t> sources_,
+                    std::vector<std::size_t> destinations_,
+                    const AnnotationsType annotations_,
+                    double fallback_speed_,
+                    FallbackCoordinateType fallback_coordinate_type_,
+                    double scale_factor_,
+                    MappingType source_destination_mapping_,
+                    Args &&...args_)
+        : BaseParameters{std::forward<Args>(args_)...}, sources{std::move(sources_)},
+          destinations{std::move(destinations_)}, fallback_speed{fallback_speed_},
+          fallback_coordinate_type{fallback_coordinate_type_}, annotations{annotations_},
+          scale_factor{scale_factor_},
+          source_destination_mapping{source_destination_mapping_}
+          
     {
     }
 
